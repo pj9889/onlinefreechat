@@ -3,107 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Connect - Community Match</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>12xBET - Official Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: #0d1117; display: flex; align-items: center; justify-content: center; min-height: 100vh; color: #fff; overflow: hidden; }
-        .container { width: 92%; max-width: 380px; text-align: center; background: rgba(255, 255, 255, 0.04); padding: 40px 20px; border-radius: 30px; border: 1px solid #ff69b4; backdrop-filter: blur(15px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        
-        .match-wrapper { position: relative; width: 140px; height: 140px; margin: 0 auto 25px; }
-        .match-area { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #ff69b4; box-shadow: 0 0 20px rgba(255, 105, 180, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: flex-start; }
-        
-        .active-dot { 
-            position: absolute; bottom: 10px; right: 10px; width: 22px; height: 22px; 
-            background: #22c55e; border: 3px solid #0d1117; border-radius: 50%; 
-            z-index: 10; display: none; 
+        :root {
+            --bg-body: #0d1117;
+            --header-bg: #161b22;
+            --gold: #fbc02d;
+            --card-bg: #21262d;
+            --3d-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 10px rgba(255,255,255,0.05);
         }
 
-        .profile-slider { display: flex; width: 1400px; height: 100%; will-change: transform; transition: transform 0.1s linear; }
-        .profile-slider img { width: 140px; height: 140px; object-fit: cover; border-radius: 50%; flex-shrink: 0; }
-        
-        h1 { font-size: 22px; margin-bottom: 8px; font-weight: 600; }
-        #match-status { color: #ff69b4; font-weight: 600; font-size: 17px; margin-bottom: 25px; height: 26px; }
-        .online-text { color: #22c55e; font-size: 14px; display: none; margin-top: -20px; margin-bottom: 20px; font-weight: 500; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+        body { background-color: var(--bg-body); color: white; overflow-x: hidden; }
 
-        .btn-chat { width: 100%; background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%); color: white; padding: 18px; border-radius: 18px; font-weight: 800; font-size: 18px; border: none; cursor: pointer; display: none; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 8px 20px rgba(255, 105, 180, 0.3); animation: pulse-btn 1.5s infinite; }
-        @keyframes pulse-btn { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
-        .loader { border: 3px solid rgba(255, 255, 255, 0.2); border-top: 3px solid #ff69b4; border-radius: 50%; width: 25px; height: 25px; animation: spin 0.8s linear infinite; margin: 0 auto; }
+        /* --- Header Section --- */
+        header {
+            background-color: var(--header-bg);
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--gold);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-icon { font-size: 22px; color: var(--gold); cursor: pointer; }
+        .logo-text { 
+            font-size: 22px; font-weight: 900; letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff 40%, var(--gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .logo-text span { color: var(--gold); -webkit-text-fill-color: var(--gold); }
+        .header-right { text-align: center; color: var(--gold); }
+        .header-right i { font-size: 20px; }
+        .header-right span { display: block; font-size: 10px; font-weight: bold; }
+
+        /* --- Auto Slider (2 Images: t1, t2) --- */
+        .slider-container { width: 100%; position: relative; height: 190px; overflow: hidden; border-bottom: 2 : 1px solid var(--gold); }
+        .slider { display: flex; width: 200%; height: 100%; transition: transform 0.8s ease-in-out; }
+        .slide { width: 50%; height: 100%; background-size: cover; background-position: center; flex-shrink: 0; }
+        .slide:nth-child(1) { background-image: url('t1.webp'); }
+        .slide:nth-child(2) { background-image: url('t2.webp'); }
+
+        /* --- Advisory / Marquee --- */
+        .advisory-bar {
+            background: #1c2128; padding: 8px 12px; display: flex;
+            align-items: center; gap: 10px; font-size: 12px; border-bottom: 1px solid #30363d;
+        }
+        .advisory-bar i { color: var(--gold); }
+
+        /* --- Platform Rules --- */
+        .rules-section { padding: 15px; background: rgba(251, 192, 45, 0.05); margin: 10px; border-radius: 10px; border: 1px solid rgba(251, 192, 45, 0.2); }
+        .rules-section h3 { font-size: 14px; color: var(--gold); margin-bottom: 5px; text-transform: uppercase; }
+        .rules-section p { font-size: 11px; color: #8b949e; line-height: 1.4; }
+
+        /* --- Hot Products Title --- */
+        .section-title { padding: 12px 15px; background: linear-gradient(90deg, #21262d, transparent); border-left: 4px solid var(--gold); margin: 10px 0; }
+        .section-title h2 { font-size: 17px; text-transform: uppercase; font-weight: 800; }
+        .section-title span { color: var(--gold); }
+
+        /* --- 3D Game Grid --- */
+        .game-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px; }
+        .game-card {
+            background: var(--card-bg); border-radius: 8px; overflow: hidden;
+            border: 1px solid #30363d; position: relative;
+            box-shadow: var(--3d-shadow); transition: 0.3s;
+        }
+        .game-card:active { transform: scale(0.95); }
+        .game-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+        .game-label { position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 20px 20px 0; border-color: transparent var(--gold) transparent transparent; }
+
+        /* --- Left Side Half-Drawer Menu --- */
+        .side-menu {
+            position: fixed; top: 0; left: -100%; width: 50%; height: 100%;
+            background: #161b22; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 2px solid var(--gold); overflow-y: auto;
+        }
+        .side-menu.active { left: 0; }
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1900; display: none; }
+        .menu-overlay.active { display: block; }
+        
+        /* Drawer Content */
+        .drawer-header { padding: 20px 15px; border-bottom: 1px solid #30363d; color: var(--gold); font-weight: 800; font-size: 15px; text-transform: uppercase; }
+        .side-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 15px; }
+        .side-game-card { background: #21262d; border-radius: 5px; border: 1px solid #30363d; overflow: hidden; }
+        .side-game-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+
+        /* --- Buffering Overlay --- */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
+            z-index: 5000; display: none; align-items: center; justify-content: center;
+        }
+        .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.1); border-top: 5px solid var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="match-wrapper">
-            <div class="active-dot" id="activeDot"></div>
-            <div class="match-area">
-                <div class="profile-slider" id="slider">
-                    <img src="p1.webp" loading="eager">
-                    <img src="p2.webp" loading="eager">
-                    <img src="p3.webp" loading="eager">
-                    <img src="p4.webp" loading="eager">
-                    <img src="p5.webp" loading="eager">
-                    <img src="p6.webp" loading="eager">
-                    <img src="p7.webp" loading="eager">
-                    <img src="p8.webp" loading="eager">
-                    <img src="p9.webp" loading="eager">
-                    <img src="p10.webp" loading="eager">
-                </div>
-            </div>
+
+    <header>
+        <div class="header-left">
+            <i class="fa-solid fa-bars menu-icon" onclick="toggleMenu()"></i>
+            <div class="logo-text">12x<span>BET</span></div>
         </div>
-        <h1 id="title">Finding New Friends...</h1>
-        <div id="match-status"><div class="loader"></div></div>
-        <div class="online-text" id="onlineIndicator"><i class="fa-solid fa-circle" style="font-size: 10px;"></i> Online Now</div>
-        <button id="chatBtn" class="btn-chat" onclick="handleStartChat()">
-            <i class="fa-brands fa-facebook-messenger"></i> START CHAT NOW
-        </button>
+        <div class="header-right">
+            <i class="fa-solid fa-headset"></i>
+            <span>24-7 CS</span>
+        </div>
+    </header>
+
+    <div class="menu-overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="side-menu" id="sideMenu">
+        <div class="drawer-header">OUR <span>HOT PRODUCTS</span></div>
+        <div class="side-grid" id="sideGrid"></div>
     </div>
+
+    <div class="slider-container">
+        <div class="slider" id="mainSlider">
+            <div class="slide"></div><div class="slide"></div>
+        </div>
+    </div>
+
+    <div class="advisory-bar">
+        <i class="fa-solid fa-bullhorn"></i>
+        <marquee>12xBET Advisory: Discover our hot products with 24/7 premium support. Secure your win today!</marquee>
+    </div>
+
+    <div class="rules-section">
+        <h3>Platform Rules</h3>
+        <p>• Fast deposits & Instant withdrawals.<br>• 24/7 Live Customer Service support.<br>• Certified and Secure Gaming Environment.</p>
+    </div>
+
+    <div class="section-title">
+        <h2>Our <span>Hot Products</span></h2>
+    </div>
+
+    <div class="game-grid" id="mainGrid"></div>
+
+    <div id="loader">
+        <div style="text-align: center;">
+            <div class="logo-text" style="font-size: 35px; margin-bottom: 20px;">12x<span>BET</span></div>
+            <div class="spinner"></div>
+            <p style="margin-top: 15px; font-size: 12px; letter-spacing: 1px;">LOADING SERVER...</p>
+        </div>
+    </div>
+
     <script>
-        const TARGET_URL = 'safeoffers.pro/a/RozKiOzWhOXLZ'; 
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxo8ZyK3hi3-dfFaSu-_ZbUDPudyXMWdAN5LCI92to2qTUEjVTp7B4Yshp44sgEXwjm/exec';
-        function sendEvent(type) { new Image().src = SCRIPT_URL + "?event=" + type; }
-        const slider = document.getElementById('slider');
-        const statusText = document.getElementById('match-status');
-        const title = document.getElementById('title');
-        const chatBtn = document.getElementById('chatBtn');
-        const activeDot = document.getElementById('activeDot');
-        const onlineIndicator = document.getElementById('onlineIndicator');
-        let position = 0;
-        let count = 0;
-        const interval = setInterval(() => {
-            position -= 140;
-            if (position <= -1400) position = 0;
-            slider.style.transform = `translateX(${position}px)`;
-            count++;
-            if (count > 25) { 
-                clearInterval(interval);
-                finalizeMatch();
+        // --- Setup Games ---
+        const mainGrid = document.getElementById('mainGrid');
+        const sideGrid = document.getElementById('sideGrid');
+        
+        for (let i = 1; i <= 16; i++) {
+            // Main Grid
+            mainGrid.innerHTML += `
+                <div class="game-card" onclick="openProduct()">
+                    <div class="game-label"></div>
+                    <img src="g${i}.webp">
+                    <div style="font-size:9px; padding:5px; text-align:center; background:#161b22;">PRODUCT ${i}</div>
+                </div>
+            `;
+            // Side Menu (Only First 8)
+            if(i <= 8) {
+                sideGrid.innerHTML += `
+                    <div class="side-game-card" onclick="openProduct()">
+                        <img src="g${i}.webp">
+                    </div>
+                `;
             }
-        }, 110);
-        function finalizeMatch() {
-            const targetPos = -560; 
-            slider.style.transition = "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)";
-            slider.style.transform = `translateX(${targetPos}px)`;
-            setTimeout(() => {
-                title.innerText = "Congratulations! 🥳";
-                statusText.innerHTML = "<span style='color:#ff69b4;'>Your Free Match Found!</span>";
-                activeDot.style.display = "block";
-                onlineIndicator.style.display = "block";
-                chatBtn.style.display = "flex";
-                confetti({ particleCount: 100, spread: 60, origin: { y: 0.7 } });
-                sendEvent('Fixed_Match_Found');
-            }, 800);
         }
-        window.onload = () => { sendEvent('Total_Visit'); };
-        function handleStartChat() {
-            sendEvent('Button_Click');
-            const isAndroid = /Android/i.test(navigator.userAgent);
-            const chromeIntent = `intent://${TARGET_URL}#Intent;scheme=https;package=com.android.chrome;end`;
-            setTimeout(() => { window.location.href = isAndroid ? chromeIntent : `https://${TARGET_URL}`; }, 300);
+
+        // --- Slider Logic (2 Images) ---
+        const slider = document.getElementById('mainSlider');
+        let currentSlide = 0;
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % 2;
+            slider.style.transform = `translateX(-${currentSlide * 50}%)`;
+        }, 2000);
+
+        // --- Menu Logic ---
+        function toggleMenu() {
+            document.getElementById('sideMenu').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        // --- Buffering Logic ---
+        function openProduct() {
+            document.getElementById('sideMenu').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+            
+            const loader = document.getElementById('loader');
+            loader.style.display = 'flex';
+
+            setTimeout(() => {
+                loader.style.display = 'none';
+                // এখানে আপনার পরবর্তী লিঙ্কে রিডাইরেক্ট হবে
+                alert("Redirecting to Product Page...");
+            }, 2000);
         }
     </script>
 </body>
