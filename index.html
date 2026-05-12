@@ -6,10 +6,15 @@
     <title>Global Connect - Community Match</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" media="print" onload="this.media='all'">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js" defer></script>
+    
     <style>
+        /* Base styles remain identical but optimized for rendering */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { 
             background: #0d1117; 
@@ -42,7 +47,8 @@
             border-radius: 30px; 
             border: 1px solid #ff69b4; 
             backdrop-filter: blur(15px); 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            will-change: transform; /* Hint to browser for performance */
         }
         
         .match-wrapper { position: relative; width: 140px; height: 140px; margin: 0 auto 25px; }
@@ -54,14 +60,30 @@
             z-index: 10; display: none; 
         }
 
-        .profile-slider { display: flex; width: 1400px; height: 100%; will-change: transform; transition: transform 0.1s linear; }
+        .profile-slider { 
+            display: flex; 
+            width: 1400px; 
+            height: 100%; 
+            will-change: transform; 
+            transform: translate3d(0,0,0); /* Forced GPU acceleration */
+            transition: transform 0.1s linear; 
+        }
         .profile-slider img { width: 140px; height: 140px; object-fit: cover; border-radius: 50%; flex-shrink: 0; }
         
         h1 { font-size: 22px; margin-bottom: 8px; font-weight: 600; }
         #match-status { color: #ff69b4; font-weight: 600; font-size: 17px; margin-bottom: 25px; height: 26px; }
         .online-text { color: #22c55e; font-size: 14px; display: none; margin-top: -20px; margin-bottom: 20px; font-weight: 500; }
 
-        .btn-chat { width: 100%; background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%); color: white; padding: 18px; border-radius: 18px; font-weight: 800; font-size: 18px; border: none; cursor: pointer; display: none; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 8px 20px rgba(255, 105, 180, 0.3); animation: pulse-btn 1.5s infinite; }
+        .btn-chat { 
+            width: 100%; 
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%); 
+            color: white; padding: 18px; 
+            border-radius: 18px; font-weight: 800; font-size: 18px; 
+            border: none; cursor: pointer; display: none; 
+            align-items: center; justify-content: center; gap: 10px; 
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.3); 
+            animation: pulse-btn 1.5s infinite; 
+        }
         @keyframes pulse-btn { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
         .loader { border: 3px solid rgba(255, 255, 255, 0.2); border-top: 3px solid #ff69b4; border-radius: 50%; width: 25px; height: 25px; animation: spin 0.8s linear infinite; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -79,7 +101,7 @@
                 'params' : {}
             };
         </script>
-        <script type="text/javascript" src="https://www.highperformanceformat.com/25ef1589e1cf5779ebd8a1dda463b14c/invoke.js"></script>
+        <script type="text/javascript" src="https://www.highperformanceformat.com/25ef1589e1cf5779ebd8a1dda463b14c/invoke.js" async></script>
     </div>
 
     <div class="container">
@@ -87,16 +109,16 @@
             <div class="active-dot" id="activeDot"></div>
             <div class="match-area">
                 <div class="profile-slider" id="slider">
-                    <img src="p1.webp" loading="eager">
-                    <img src="p2.webp" loading="eager">
-                    <img src="p3.webp" loading="eager">
-                    <img src="p4.webp" loading="eager">
-                    <img src="p5.webp" loading="eager">
-                    <img src="p6.webp" loading="eager">
-                    <img src="p7.webp" loading="eager">
-                    <img src="p8.webp" loading="eager">
-                    <img src="p9.webp" loading="eager">
-                    <img src="p10.webp" loading="eager">
+                    <img src="p1.webp" fetchpriority="high">
+                    <img src="p2.webp" fetchpriority="high">
+                    <img src="p3.webp" fetchpriority="high">
+                    <img src="p4.webp" fetchpriority="high">
+                    <img src="p5.webp" fetchpriority="high">
+                    <img src="p6.webp" fetchpriority="high">
+                    <img src="p7.webp" fetchpriority="high">
+                    <img src="p8.webp" fetchpriority="high">
+                    <img src="p9.webp" fetchpriority="high">
+                    <img src="p10.webp" fetchpriority="high">
                 </div>
             </div>
         </div>
@@ -109,10 +131,18 @@
     </div>
 
     <script>
+        // Use const for faster lookup
         const TARGET_URL = 'messenger.jacklyn.site'; 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxo8ZyK3hi3-dfFaSu-_ZbUDPudyXMWdAN5LCI92to2qTUEjVTp7B4Yshp44sgEXwjm/exec';
         
-        function sendEvent(type) { new Image().src = SCRIPT_URL + "?event=" + type; }
+        function sendEvent(type) { 
+            // Optimized tracking request
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(SCRIPT_URL + "?event=" + type);
+            } else {
+                new Image().src = SCRIPT_URL + "?event=" + type; 
+            }
+        }
         
         const slider = document.getElementById('slider');
         const statusText = document.getElementById('match-status');
@@ -124,21 +154,23 @@
         let position = 0;
         let count = 0;
         
+        // Fast Start - RequestAnimationFrame is more efficient than setInterval but keeping your logic fast
         const interval = setInterval(() => {
             position -= 140;
             if (position <= -1400) position = 0;
-            slider.style.transform = `translateX(${position}px)`;
+            // translate3d is faster as it triggers hardware acceleration
+            slider.style.transform = `translate3d(${position}px, 0, 0)`;
             count++;
             if (count > 25) { 
                 clearInterval(interval);
                 finalizeMatch();
             }
-        }, 110);
+        }, 100);
 
         function finalizeMatch() {
             const targetPos = -560; 
-            slider.style.transition = "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)";
-            slider.style.transform = `translateX(${targetPos}px)`;
+            slider.style.transition = "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
+            slider.style.transform = `translate3d(${targetPos}px, 0, 0)`;
             
             setTimeout(() => {
                 title.innerText = "Congratulations! 🥳";
@@ -146,26 +178,23 @@
                 activeDot.style.display = "block";
                 onlineIndicator.style.display = "block";
                 chatBtn.style.display = "flex";
-                confetti({ particleCount: 100, spread: 60, origin: { y: 0.7 } });
+                
+                if(window.confetti) {
+                    confetti({ particleCount: 100, spread: 60, origin: { y: 0.7 } });
+                }
+                
                 sendEvent('Fixed_Match_Found');
 
-                // ম্যাচ হওয়ার ১ সেকেন্ড পরে অটো রিডাইরেক্ট
-                setTimeout(() => {
-                    handleStartChat();
-                }, 1000);
-
-            }, 800);
+                // Auto-Redirect after 1 second
+                setTimeout(handleStartChat, 1000);
+            }, 600);
         }
 
         window.onload = () => { sendEvent('Total_Visit'); };
 
         function handleStartChat() {
             sendEvent('Button_Click');
-            
-            // FB Browser এবং Android এর জন্য উপযুক্ত লিঙ্ক সিস্টেম
             const destination = `https://${TARGET_URL}`;
-            
-            // সব ব্রাউজারের জন্য সরাসরি রিডাইরেক্ট
             window.location.replace(destination);
         }
     </script>
