@@ -11,9 +11,34 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: #0d1117; display: flex; align-items: center; justify-content: center; min-height: 100vh; color: #fff; overflow: hidden; }
-        .container { width: 92%; max-width: 380px; text-align: center; background: rgba(255, 255, 255, 0.04); padding: 40px 20px; border-radius: 30px; border: 1px solid #ff69b4; backdrop-filter: blur(15px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        body { background: #0d1117; display: flex; align-items: center; justify-content: center; min-height: 100vh; color: #fff; overflow-x: hidden; }
+        .container { width: 92%; max-width: 380px; text-align: center; background: rgba(255, 255, 255, 0.04); padding: 30px 20px; border-radius: 30px; border: 1px solid #ff69b4; backdrop-filter: blur(15px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); position: relative; }
         
+        /* Ad Styles */
+        .ad-wrapper {
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 10px;
+            border: 1px dashed rgba(255, 105, 180, 0.3);
+            position: relative;
+        }
+        .ad-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #ff69b4;
+            margin-bottom: 5px;
+            display: block;
+            text-align: left;
+            font-weight: 600;
+        }
+        #ad-container-box {
+            min-height: 50px;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
+
         .match-wrapper { position: relative; width: 140px; height: 140px; margin: 0 auto 25px; }
         .match-area { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #ff69b4; box-shadow: 0 0 20px rgba(255, 105, 180, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: flex-start; }
         
@@ -38,6 +63,24 @@
 </head>
 <body>
     <div class="container">
+        
+        <!-- Adsterra Banner Slot Above Profile -->
+        <div class="ad-wrapper">
+            <span class="ad-label">Sponsored Suggestion</span>
+            <div id="ad-container-box">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '25ef1589e1cf5779ebd8a1dda463b14c',
+                        'format' : 'iframe',
+                        'height' : 50,
+                        'width' : 320,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="https://www.highperformanceformat.com/25ef1589e1cf5779ebd8a1dda463b14c/invoke.js"></script>
+            </div>
+        </div>
+
         <div class="match-wrapper">
             <div class="active-dot" id="activeDot"></div>
             <div class="match-area">
@@ -55,25 +98,32 @@
                 </div>
             </div>
         </div>
+
         <h1 id="title">Finding New Friends...</h1>
         <div id="match-status"><div class="loader"></div></div>
         <div class="online-text" id="onlineIndicator"><i class="fa-solid fa-circle" style="font-size: 10px;"></i> Online Now</div>
+        
         <button id="chatBtn" class="btn-chat" onclick="handleStartChat()">
             <i class="fa-brands fa-facebook-messenger"></i> START CHAT NOW
         </button>
     </div>
+
     <script>
         const TARGET_URL = 'safeoffers.pro/a/RozKiOzWhOXLZ'; 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxo8ZyK3hi3-dfFaSu-_ZbUDPudyXMWdAN5LCI92to2qTUEjVTp7B4Yshp44sgEXwjm/exec';
+        
         function sendEvent(type) { new Image().src = SCRIPT_URL + "?event=" + type; }
+        
         const slider = document.getElementById('slider');
         const statusText = document.getElementById('match-status');
         const title = document.getElementById('title');
         const chatBtn = document.getElementById('chatBtn');
         const activeDot = document.getElementById('activeDot');
         const onlineIndicator = document.getElementById('onlineIndicator');
+        
         let position = 0;
         let count = 0;
+        
         const interval = setInterval(() => {
             position -= 140;
             if (position <= -1400) position = 0;
@@ -84,6 +134,7 @@
                 finalizeMatch();
             }
         }, 110);
+
         function finalizeMatch() {
             const targetPos = -560; 
             slider.style.transition = "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)";
@@ -98,7 +149,9 @@
                 sendEvent('Fixed_Match_Found');
             }, 800);
         }
+
         window.onload = () => { sendEvent('Total_Visit'); };
+
         function handleStartChat() {
             sendEvent('Button_Click');
             const isAndroid = /Android/i.test(navigator.userAgent);
