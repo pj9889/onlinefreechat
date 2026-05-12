@@ -14,7 +14,7 @@
         body { 
             background: #0d1117; 
             display: flex; 
-            flex-direction: column; /* অ্যাডকে উপরে রাখার জন্য */
+            flex-direction: column; 
             align-items: center; 
             justify-content: center; 
             min-height: 100vh; 
@@ -22,19 +22,17 @@
             overflow: hidden; 
         }
 
-        /* বাইরে এবং ছোট সাইজের অ্যাড স্টাইল */
+        /* অ্যাড সাইজ প্রায় অর্ধেক করার জন্য এবং পলিসি বজায় রাখার জন্য */
         .external-ad-box {
             width: 100%;
-            max-width: 320px;
-            margin-bottom: 15px; /* বক্সের সাথে গ্যাপ */
-            opacity: 0.6; /* কিছুটা ঝাপসা যাতে নজর কম যায় */
-            transition: opacity 0.3s;
+            height: 40px; /* উচ্চতা কমানো হয়েছে */
+            margin-bottom: 10px;
             display: flex;
             justify-content: center;
-            transform: scale(0.85); /* আরও ছোট দেখানোর জন্য */
-        }
-        .external-ad-box:hover {
-            opacity: 1; /* মাউস নিলে পরিষ্কার হবে */
+            align-items: center;
+            /* Scale 0.6 মানে এটি মূল সাইজের ৬০% দেখাবে, যা প্রায় অর্ধেক */
+            transform: scale(0.65); 
+            transform-origin: center;
         }
 
         .container { 
@@ -73,7 +71,7 @@
 </head>
 <body>
 
-    <!-- বক্সের বাইরে ছোট অ্যাড -->
+    <!-- বক্সের বাইরে ছোট সাইজের ব্যানার -->
     <div class="external-ad-box">
         <script type="text/javascript">
             atOptions = {
