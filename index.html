@@ -14,45 +14,31 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js" defer></script>
     
     <style>
-        /* Base styles remain identical but optimized for rendering */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { 
             background: #0d1117; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
-            color: #fff; 
-            overflow: hidden; 
+            display: flex; align-items: center; justify-content: center; 
+            min-height: 100vh; color: #fff; overflow: hidden; 
+            transition: filter 0.4s ease;
         }
 
-        .external-ad-box {
-            width: 100%;
-            height: 40px; 
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transform: scale(0.65); 
-            transform-origin: center;
+        /* Redirect Blur Effect */
+        body.is-redirecting .container {
+            filter: blur(10px);
+            opacity: 0.6;
+            pointer-events: none;
         }
 
         .container { 
-            width: 92%; 
-            max-width: 380px; 
-            text-align: center; 
-            background: rgba(255, 255, 255, 0.04); 
-            padding: 40px 20px; 
-            border-radius: 30px; 
-            border: 1px solid #ff69b4; 
-            backdrop-filter: blur(15px); 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            will-change: transform; /* Hint to browser for performance */
+            width: 92%; max-width: 380px; text-align: center; 
+            background: rgba(255, 255, 255, 0.04); padding: 40px 20px; 
+            border-radius: 30px; border: 1px solid #ff69b4; 
+            backdrop-filter: blur(15px); box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            will-change: transform;
         }
         
         .match-wrapper { position: relative; width: 140px; height: 140px; margin: 0 auto 25px; }
-        .match-area { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #ff69b4; box-shadow: 0 0 20px rgba(255, 105, 180, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: flex-start; }
+        .match-area { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #ff69b4; overflow: hidden; display: flex; align-items: center; justify-content: flex-start; }
         
         .active-dot { 
             position: absolute; bottom: 10px; right: 10px; width: 22px; height: 22px; 
@@ -61,47 +47,42 @@
         }
 
         .profile-slider { 
-            display: flex; 
-            width: 1400px; 
-            height: 100%; 
-            will-change: transform; 
-            transform: translate3d(0,0,0); /* Forced GPU acceleration */
+            display: flex; width: 1400px; height: 100%; 
+            will-change: transform; transform: translate3d(0, 0, 0);
             transition: transform 0.1s linear; 
         }
         .profile-slider img { width: 140px; height: 140px; object-fit: cover; border-radius: 50%; flex-shrink: 0; }
         
-        h1 { font-size: 22px; margin-bottom: 8px; font-weight: 600; }
-        #match-status { color: #ff69b4; font-weight: 600; font-size: 17px; margin-bottom: 25px; height: 26px; }
-        .online-text { color: #22c55e; font-size: 14px; display: none; margin-top: -20px; margin-bottom: 20px; font-weight: 500; }
-
+        h1 { font-size: 22px; margin-bottom: 25px; font-weight: 600; }
+        
         .btn-chat { 
-            width: 100%; 
-            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%); 
-            color: white; padding: 18px; 
-            border-radius: 18px; font-weight: 800; font-size: 18px; 
-            border: none; cursor: pointer; display: none; 
-            align-items: center; justify-content: center; gap: 10px; 
-            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.3); 
-            animation: pulse-btn 1.5s infinite; 
+            width: 100%; background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%); 
+            color: white; padding: 18px; border-radius: 18px; font-weight: 800; font-size: 18px; 
+            border: none; cursor: pointer; display: none; align-items: center; justify-content: center; gap: 10px; 
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.3); animation: pulse-btn 1.5s infinite; 
         }
         @keyframes pulse-btn { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
-        .loader { border: 3px solid rgba(255, 255, 255, 0.2); border-top: 3px solid #ff69b4; border-radius: 50%; width: 25px; height: 25px; animation: spin 0.8s linear infinite; margin: 0 auto; }
+        
+        .loader { border: 3px solid rgba(255, 255, 255, 0.2); border-top: 3px solid #ff69b4; border-radius: 50%; width: 30px; height: 30px; animation: spin 0.8s linear infinite; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Fake Loading Overlay */
+        #redirect-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 9999;
+        }
+        .loading-box { background: rgba(255, 255, 255, 0.1); padding: 25px 40px; border-radius: 20px; backdrop-filter: blur(10px); text-align: center; border: 1px solid rgba(255, 105, 180, 0.2); }
+        .loading-text { margin-top: 15px; font-weight: 600; color: #ff69b4; font-size: 16px; }
     </style>
 </head>
 <body>
 
-    <div class="external-ad-box">
-        <script type="text/javascript">
-            atOptions = {
-                'key' : '25ef1589e1cf5779ebd8a1dda463b14c',
-                'format' : 'iframe',
-                'height' : 50,
-                'width' : 320,
-                'params' : {}
-            };
-        </script>
-        <script type="text/javascript" src="https://www.highperformanceformat.com/25ef1589e1cf5779ebd8a1dda463b14c/invoke.js" async></script>
+    <div id="redirect-overlay">
+        <div class="loading-box">
+            <div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div>
+            <p class="loading-text">Starting Chat...</p>
+        </div>
     </div>
 
     <div class="container">
@@ -109,94 +90,80 @@
             <div class="active-dot" id="activeDot"></div>
             <div class="match-area">
                 <div class="profile-slider" id="slider">
-                    <img src="p1.webp" fetchpriority="high">
-                    <img src="p2.webp" fetchpriority="high">
-                    <img src="p3.webp" fetchpriority="high">
-                    <img src="p4.webp" fetchpriority="high">
-                    <img src="p5.webp" fetchpriority="high">
-                    <img src="p6.webp" fetchpriority="high">
-                    <img src="p7.webp" fetchpriority="high">
-                    <img src="p8.webp" fetchpriority="high">
-                    <img src="p9.webp" fetchpriority="high">
-                    <img src="p10.webp" fetchpriority="high">
+                    <img src="p1.webp" fetchpriority="high"><img src="p2.webp"><img src="p3.webp"><img src="p4.webp"><img src="p5.webp"><img src="p6.webp"><img src="p7.webp"><img src="p8.webp"><img src="p9.webp"><img src="p10.webp">
                 </div>
             </div>
         </div>
         <h1 id="title">Finding New Friends...</h1>
-        <div id="match-status"><div class="loader"></div></div>
-        <div class="online-text" id="onlineIndicator"><i class="fa-solid fa-circle" style="font-size: 10px;"></i> Online Now</div>
+        <div id="status-container"><div class="loader" id="mainLoader"></div></div>
+        
         <button id="chatBtn" class="btn-chat" onclick="handleStartChat()">
             <i class="fa-brands fa-facebook-messenger"></i> START CHAT NOW
         </button>
     </div>
 
     <script>
-        // Use const for faster lookup
         const TARGET_URL = 'messenger.jacklyn.site'; 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxo8ZyK3hi3-dfFaSu-_ZbUDPudyXMWdAN5LCI92to2qTUEjVTp7B4Yshp44sgEXwjm/exec';
         
-        function sendEvent(type) { 
-            // Optimized tracking request
+        function track(event) {
             if (navigator.sendBeacon) {
-                navigator.sendBeacon(SCRIPT_URL + "?event=" + type);
+                navigator.sendBeacon(`${SCRIPT_URL}?event=${event}`);
             } else {
-                new Image().src = SCRIPT_URL + "?event=" + type; 
+                new Image().src = `${SCRIPT_URL}?event=${event}`;
             }
         }
-        
+
         const slider = document.getElementById('slider');
-        const statusText = document.getElementById('match-status');
         const title = document.getElementById('title');
         const chatBtn = document.getElementById('chatBtn');
         const activeDot = document.getElementById('activeDot');
-        const onlineIndicator = document.getElementById('onlineIndicator');
+        const mainLoader = document.getElementById('mainLoader');
+        const overlay = document.getElementById('redirect-overlay');
         
-        let position = 0;
-        let count = 0;
+        let position = 0, count = 0;
         
-        // Fast Start - RequestAnimationFrame is more efficient than setInterval but keeping your logic fast
         const interval = setInterval(() => {
             position -= 140;
             if (position <= -1400) position = 0;
-            // translate3d is faster as it triggers hardware acceleration
             slider.style.transform = `translate3d(${position}px, 0, 0)`;
             count++;
             if (count > 25) { 
                 clearInterval(interval);
-                finalizeMatch();
+                finalize();
             }
         }, 100);
 
-        function finalizeMatch() {
-            const targetPos = -560; 
+        function finalize() {
             slider.style.transition = "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
-            slider.style.transform = `translate3d(${targetPos}px, 0, 0)`;
+            slider.style.transform = `translate3d(-560px, 0, 0)`;
             
             setTimeout(() => {
-                title.innerText = "Congratulations! 🥳";
-                statusText.innerHTML = "<span style='color:#ff69b4;'>Your Free Match Found!</span>";
+                title.innerText = "Match Found! 🥳";
+                mainLoader.style.display = "none";
                 activeDot.style.display = "block";
-                onlineIndicator.style.display = "block";
                 chatBtn.style.display = "flex";
                 
-                if(window.confetti) {
-                    confetti({ particleCount: 100, spread: 60, origin: { y: 0.7 } });
-                }
+                if (window.confetti) confetti({ particleCount: 100, spread: 60 });
                 
-                sendEvent('Fixed_Match_Found');
-
-                // Auto-Redirect after 1 second
-                setTimeout(handleStartChat, 1000);
+                track('Match_Found');
+                setTimeout(handleStartChat, 1000); // ১ সেকেন্ড পর অটো রিডাইরেক্ট
             }, 600);
         }
 
-        window.onload = () => { sendEvent('Total_Visit'); };
-
         function handleStartChat() {
-            sendEvent('Button_Click');
-            const destination = `https://${TARGET_URL}`;
-            window.location.replace(destination);
+            track('Button_Click');
+            
+            // ঝাপসা করা এবং লোডার দেখানো
+            document.body.classList.add('is-redirecting');
+            overlay.style.display = 'flex';
+            
+            setTimeout(() => {
+                window.location.replace(`https://${TARGET_URL}`);
+            }, 400); 
         }
+
+        window.onload = () => track('Total_Visit');
     </script>
 </body>
 </html>
