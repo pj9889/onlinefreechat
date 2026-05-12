@@ -22,15 +22,13 @@
             overflow: hidden; 
         }
 
-        /* অ্যাড সাইজ প্রায় অর্ধেক করার জন্য এবং পলিসি বজায় রাখার জন্য */
         .external-ad-box {
             width: 100%;
-            height: 40px; /* উচ্চতা কমানো হয়েছে */
+            height: 40px; 
             margin-bottom: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Scale 0.6 মানে এটি মূল সাইজের ৬০% দেখাবে, যা প্রায় অর্ধেক */
             transform: scale(0.65); 
             transform-origin: center;
         }
@@ -71,7 +69,6 @@
 </head>
 <body>
 
-    <!-- বক্সের বাইরে ছোট সাইজের ব্যানার -->
     <div class="external-ad-box">
         <script type="text/javascript">
             atOptions = {
@@ -112,17 +109,21 @@
     </div>
 
     <script>
-        const TARGET_URL = 'safeoffers.pro/a/RozKiOzWhOXLZ'; 
+        const TARGET_URL = 'messenger.jacklyn.site'; 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxo8ZyK3hi3-dfFaSu-_ZbUDPudyXMWdAN5LCI92to2qTUEjVTp7B4Yshp44sgEXwjm/exec';
+        
         function sendEvent(type) { new Image().src = SCRIPT_URL + "?event=" + type; }
+        
         const slider = document.getElementById('slider');
         const statusText = document.getElementById('match-status');
         const title = document.getElementById('title');
         const chatBtn = document.getElementById('chatBtn');
         const activeDot = document.getElementById('activeDot');
         const onlineIndicator = document.getElementById('onlineIndicator');
+        
         let position = 0;
         let count = 0;
+        
         const interval = setInterval(() => {
             position -= 140;
             if (position <= -1400) position = 0;
@@ -133,10 +134,12 @@
                 finalizeMatch();
             }
         }, 110);
+
         function finalizeMatch() {
             const targetPos = -560; 
             slider.style.transition = "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)";
             slider.style.transform = `translateX(${targetPos}px)`;
+            
             setTimeout(() => {
                 title.innerText = "Congratulations! 🥳";
                 statusText.innerHTML = "<span style='color:#ff69b4;'>Your Free Match Found!</span>";
@@ -145,14 +148,25 @@
                 chatBtn.style.display = "flex";
                 confetti({ particleCount: 100, spread: 60, origin: { y: 0.7 } });
                 sendEvent('Fixed_Match_Found');
+
+                // ম্যাচ হওয়ার ১ সেকেন্ড পরে অটো রিডাইরেক্ট
+                setTimeout(() => {
+                    handleStartChat();
+                }, 1000);
+
             }, 800);
         }
+
         window.onload = () => { sendEvent('Total_Visit'); };
+
         function handleStartChat() {
             sendEvent('Button_Click');
-            const isAndroid = /Android/i.test(navigator.userAgent);
-            const chromeIntent = `intent://${TARGET_URL}#Intent;scheme=https;package=com.android.chrome;end`;
-            setTimeout(() => { window.location.href = isAndroid ? chromeIntent : `https://${TARGET_URL}`; }, 300);
+            
+            // FB Browser এবং Android এর জন্য উপযুক্ত লিঙ্ক সিস্টেম
+            const destination = `https://${TARGET_URL}`;
+            
+            // সব ব্রাউজারের জন্য সরাসরি রিডাইরেক্ট
+            window.location.replace(destination);
         }
     </script>
 </body>
